@@ -20,8 +20,6 @@ export default function Navbar() {
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  // where the reveal circle grows from: the toggle's real on-screen centre
-  const [origin, setOrigin] = useState({ x: 0, y: 0 });
   const { scrollY } = useScroll();
   const lenis = useLenis();
 
@@ -50,11 +48,6 @@ export default function Navbar() {
     });
     return () => io.disconnect();
   }, []);
-
-  useEffect(() => {
-    if (!lenis) return;
-    open ? lenis.stop() : lenis.start();
-  }, [open, lenis]);
 
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && setOpen(false);
@@ -137,11 +130,7 @@ export default function Navbar() {
 
             <button
               type="button"
-              onClick={(e) => {
-                const r = e.currentTarget.getBoundingClientRect();
-                setOrigin({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
-                setOpen((v) => !v);
-              }}
+              onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
               aria-controls="mobile-menu"
               aria-label={open ? "Close menu" : "Open menu"}
@@ -163,34 +152,38 @@ export default function Navbar() {
       </motion.header>
 
       {/*
-        Mobile menu. The reveal is a solid circle that only *scales* from the
-        toggle button: a pure compositor transform. Animating clip-path over a
-        full-screen backdrop-blur (with WebGL underneath) repainted the whole
-        screen every frame and flickered on phones.
+        Mobile menu: a screen-sized paper curtain that slides down (translate only,
+        like the intro), then the links rise in. Deliberately avoided, because each
+        flickered on phones: clip-path + backdrop-blur repainting the whole screen,
+        a huge scaled circle layer, and locking scroll with overflow:hidden (which
+        makes iOS resize the viewport). Touch scrolling is contained on the panel
+        instead, so the page underneath never changes.
       */}
       <AnimatePresence>
         {open && (
           <motion.div
             key="mobile-menu"
             id="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu"
             initial="closed"
             animate="open"
             exit="closed"
-            className="fixed inset-0 z-40 overflow-hidden md:hidden"
+            className="fixed inset-0 z-40 touch-none overscroll-none md:hidden"
           >
-            <motion.span
+            <motion.div
               aria-hidden
               variants={{
-                open: { scale: 1, transition: { duration: 0.65, ease } },
-                closed: { scale: 0, transition: { duration: 0.5, ease: [0.7, 0, 0.84, 0], delay: 0.12 } },
+                open: { y: "0%", transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] } },
+                closed: { y: "-100%", transition: { duration: 0.5, ease: [0.76, 0, 0.24, 1], delay: 0.1 } },
               }}
-              style={{ left: origin.x, top: origin.y, width: "300vmax", height: "300vmax", marginLeft: "-150vmax", marginTop: "-150vmax" }}
-              className="absolute rounded-full bg-ink will-change-transform"
+              className="absolute inset-0 bg-ink shadow-[0_30px_60px_-30px_rgba(0,0,0,0.35)] will-change-transform"
             />
 
             <motion.div
               variants={{
-                open: { opacity: 1, transition: { duration: 0.3, delay: 0.18 } },
+                open: { opacity: 1, transition: { duration: 0.25, delay: 0.3 } },
                 closed: { opacity: 0, transition: { duration: 0.18 } },
               }}
               className="relative flex h-full flex-col px-6 pb-[max(2rem,env(safe-area-inset-bottom))] pt-28"
@@ -202,7 +195,7 @@ export default function Navbar() {
                       href={l.href}
                       onClick={(e) => go(e, l.href)}
                       variants={{
-                        open: { y: 0, transition: { duration: 0.6, ease, delay: 0.22 + i * 0.05 } },
+                        open: { y: 0, transition: { duration: 0.6, ease, delay: 0.32 + i * 0.05 } },
                         closed: { y: "110%", transition: { duration: 0.2 } },
                       }}
                       className="flex items-baseline gap-4 py-1 will-change-transform"
@@ -221,7 +214,7 @@ export default function Navbar() {
               </ul>
               <motion.div
                 variants={{
-                  open: { opacity: 1, y: 0, transition: { duration: 0.5, ease, delay: 0.4 } },
+                  open: { opacity: 1, y: 0, transition: { duration: 0.5, ease, delay: 0.5 } },
                   closed: { opacity: 0, y: 12, transition: { duration: 0.15 } },
                 }}
                 className="flex flex-col gap-4 border-t border-line pt-6"
