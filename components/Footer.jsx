@@ -155,16 +155,12 @@ export default function Footer() {
             <p className="mt-1 text-sm text-mute">Ahmedabad · IST</p>
           </div>
           <div>
-            <p className="mb-5 font-mono text-[10px] uppercase tracking-[0.22em] text-mute">Status</p>
-            <p className="flex items-center gap-2.5 text-[15px] text-bone/85">
-              <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-bone" />
-              Open to work
-            </p>
+            <p className="mb-5 font-mono text-[10px] uppercase tracking-[0.22em] text-mute">Résumé</p>
             <a
               href={profile.resume}
               target="_blank"
               rel="noreferrer"
-              className="mt-3 inline-block border-b border-bone/30 pb-0.5 text-sm text-bone/70 transition-colors hover:border-bone hover:text-bone"
+              className="inline-block border-b border-bone/30 pb-0.5 text-[15px] text-bone/80 transition-colors hover:border-bone hover:text-bone"
             >
               Download résumé
             </a>
