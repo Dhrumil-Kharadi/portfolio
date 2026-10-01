@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a1a1a"/>
+      <stop offset="1" stop-color="#050505"/>
+    </linearGradient>
+    <radialGradient id="matter" cx=".34" cy=".28" r=".85">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset=".4" stop-color="#dcdbd6"/>
+      <stop offset=".75" stop-color="#85847f"/>
+      <stop offset="1" stop-color="#3a3a37"/>
+    </radialGradient>
+    <radialGradient id="glow" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- ink tile -->
+  <rect width="64" height="64" rx="14" fill="url(#tile)"/>
+  <rect x=".5" y=".5" width="63" height="63" rx="13.5" fill="none" stroke="#ffffff" stroke-opacity=".14"/>
+  <!-- soft halo -->
+  <circle cx="32" cy="32" r="27" fill="url(#glow)"/>
+  <!-- orbit, back half (behind the matter) -->
+  <path d="M5.5 39.5A27 8 -22 0 1 58.5 24.5" fill="none" stroke="#f4f3ef" stroke-opacity=".35" stroke-width="1.4"/>
+  <!-- anomalous matter: folded organic sphere -->
+  <path fill="url(#matter)" d="M33 11C39 10 44 14 47 18C52 21 54 28 52 33C55 39 51 46 45 48C41 53 33 54 28 51C21 52 15 47 14 41C10 36 11 28 15 24C16 17 24 11 33 11Z"/>
+  <!-- folds -->
+  <path d="M38 14.5C41 19 41 24 38.5 27.5" fill="none" stroke="#1a1a18" stroke-opacity=".14" stroke-width="1.8" stroke-linecap="round"/>
+  <!-- specular -->
+  <ellipse cx="25.5" cy="21.5" rx="5" ry="3" fill="#ffffff" fill-opacity=".75" transform="rotate(-28 25.5 21.5)"/>
+  <!-- orbit, front half (over the matter) -->
+  <path d="M58.5 24.5A27 8 -22 0 1 5.5 39.5" fill="none" stroke="#f4f3ef" stroke-opacity=".9" stroke-width="1.6"/>
+</svg>
