@@ -11,15 +11,15 @@ const PREF_KEY = "dk-music";
 // Loops one 30-second section of the track, very quietly.
 // Volume goes through a Web Audio gain node because iOS ignores
 // HTMLMediaElement.volume, and the gain also gives smooth fades.
-// Browsers block audible autoplay, so "on by default" means it starts on the
-// visitor's first tap / click / key press; the toggle remembers "off".
+// Off by default. Turning it on is remembered; on a return visit it starts on
+// the first tap / click / key press, since browsers block audible autoplay.
 export default function MusicToggle() {
   const { ready } = useIntro();
   const audioRef = useRef(null);
   const graph = useRef(null); // { ctx, gain }
-  const wantOn = useRef(true);
+  const wantOn = useRef(false);
   const fadingOut = useRef(false);
-  const [on, setOn] = useState(true);
+  const [on, setOn] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [available, setAvailable] = useState(true);
   const [hover, setHover] = useState(false);
@@ -86,9 +86,9 @@ export default function MusicToggle() {
   useEffect(() => {
     const id = window.setTimeout(() => {
       try {
-        if (localStorage.getItem(PREF_KEY) === "off") {
-          wantOn.current = false;
-          setOn(false);
+        if (localStorage.getItem(PREF_KEY) === "on") {
+          wantOn.current = true;
+          setOn(true);
         }
       } catch {}
     }, 0);

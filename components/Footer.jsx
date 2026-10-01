@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { useLenis } from "lenis/react";
-import { music, navLinks, profile } from "@/lib/data";
+import { navLinks, profile } from "@/lib/data";
 
 const ease = [0.16, 1, 0.3, 1];
 
@@ -170,7 +170,6 @@ export default function Footer() {
 
       <div className="relative mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 mt-20 border-t border-line py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] font-mono text-[10px] uppercase tracking-[0.2em] text-mute sm:flex-row">
         <span>© {new Date().getFullYear()} {profile.name}</span>
-        <span className="text-center normal-case tracking-[0.08em]">Music: {music.credit} · NoCopyrightSounds</span>
         <button
           type="button"
           onClick={(e) => go(e, "#home")}
