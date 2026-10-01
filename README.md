@@ -4,6 +4,8 @@
 
 **Cinematic black & white portfolio of Dhrumil Kharadi — DevOps Engineer & Full-Stack Developer.**
 
+[![Live](https://img.shields.io/badge/Live-portfolio--rho--ten-f4f3ef?style=for-the-badge&logo=vercel&logoColor=0b0b0b&labelColor=0b0b0b)](https://portfolio-rho-ten-0vn49ndlzd.vercel.app/)
+
 ![Next.js](https://img.shields.io/badge/Next.js-0b0b0b?style=for-the-badge&logo=nextdotjs&logoColor=f4f3ef)
 ![Three.js](https://img.shields.io/badge/Three.js-0b0b0b?style=for-the-badge&logo=threedotjs&logoColor=f4f3ef)
 ![Tailwind](https://img.shields.io/badge/Tailwind-0b0b0b?style=for-the-badge&logo=tailwindcss&logoColor=f4f3ef)
