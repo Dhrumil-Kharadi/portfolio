@@ -13,7 +13,9 @@ export default function Home() {
     <IntroProvider>
       <Preloader />
       <SmokeBackground />
-      <div aria-hidden className="grain" />
+      <div aria-hidden className="grain-frame">
+        <div className="grain" />
+      </div>
       <Navbar />
       <main className="relative">
         <Hero />

@@ -67,7 +67,7 @@ void main() {
   vec2 ps = pc + m;
 
   // smoke rises: stretch vertically so the field reads as plumes, not marble
-  vec2 base = ps * vec2(1.15, 0.62) + vec2(0.0, -t * 2.2 - uScroll * 0.5);
+  vec2 base = ps * vec2(1.15, 0.62) + vec2(0.0, -t * 2.2);
 
   vec2 q = vec2(
     fbm(base + t * 0.5),
@@ -149,11 +149,16 @@ export default function SmokeBackground() {
     });
     if (!gl) return;
 
-    const isMobile = window.matchMedia("(max-width: 768px), (hover: none)").matches;
+    // "Desktop site" mode on a phone reports a ~980px viewport, so judge the
+    // GPU by the input hardware, and only use width for where the plume sits.
+    const isMobile = window.matchMedia("(hover: none), (pointer: coarse), (max-width: 768px)").matches;
+    const narrow = window.matchMedia("(max-width: 768px)").matches;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     // Smoke is soft - rendering below native res and upscaling is invisible
     // and saves most of the fill-rate.
     const scale = isMobile ? 0.3 : 0.38;
+    // hard cap on shaded pixels so tall/wide viewports can't blow the budget
+    const MAX_PIXELS = isMobile ? 90000 : 260000;
 
     const vs = compile(gl, gl.VERTEX_SHADER, VERT);
     const fs = compile(gl, gl.FRAGMENT_SHADER, FRAG(isMobile ? 4 : 5));
@@ -189,8 +194,9 @@ export default function SmokeBackground() {
       if (vw === lastW && Math.abs(vh - lastH) < 160) return;
       lastW = vw;
       lastH = vh;
-      const w = Math.max(1, Math.floor(vw * scale));
-      const h = Math.max(1, Math.floor(vh * scale));
+      const fit = Math.min(1, Math.sqrt(MAX_PIXELS / (vw * scale * vh * scale)));
+      const w = Math.max(1, Math.floor(vw * scale * fit));
+      const h = Math.max(1, Math.floor(vh * scale * fit));
       if (canvas.width !== w || canvas.height !== h) {
         canvas.width = w;
         canvas.height = h;
@@ -241,8 +247,8 @@ export default function SmokeBackground() {
       gl.uniform1f(uForce, mouse.force);
       gl.uniform1f(uScroll, window.scrollY / window.innerHeight);
       // plume sits where the matter renders: centred on desktop, mid-screen on phones
-      gl.uniform2f(uPlume, 0.5, isMobile ? 0.55 : 0.52);
-      gl.uniform1f(uPlumeTight, isMobile ? 14.0 : 5.5);
+      gl.uniform2f(uPlume, 0.5, narrow ? 0.55 : 0.52);
+      gl.uniform1f(uPlumeTight, narrow ? 14.0 : 5.5);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
 

@@ -32,7 +32,7 @@ function Row({ items, reverse, outline, duration }) {
 
 export default function Marquee() {
   return (
-    <section aria-label="Tech stack" className="relative z-10 py-10 sm:py-16">
+    <section aria-label="Tech stack" className="relative z-10 overflow-hidden py-10 sm:py-16">
       <div className="-rotate-2 scale-[1.04] border-y border-line bg-white/70 py-4">
         <Row items={stackRowA} duration="55s" />
         <Row items={stackRowB} reverse outline duration="60s" />

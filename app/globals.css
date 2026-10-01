@@ -31,6 +31,10 @@
 html {
   background: var(--ink);
   -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+@supports (overflow: clip) {
+  html { overflow-x: clip; }
 }
 
 html.lenis,
@@ -104,8 +108,18 @@ body {
 }
 
 /* ---------- Film grain ---------- */
-.grain {
+/* The grain layer is 2x the viewport so its jitter never shows an edge; the
+   frame clips it to exactly the screen so it can never widen the page. */
+.grain-frame {
   position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 60;
+  contain: strict;
+}
+.grain {
+  position: absolute;
   inset: -50%;
   width: 200%;
   height: 200%;

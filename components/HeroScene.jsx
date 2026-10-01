@@ -233,14 +233,17 @@ function Matter({ pointer, quality }) {
 
 function pickQuality() {
   const small = window.matchMedia("(max-width: 768px)").matches;
+  // phones in "desktop site" mode are wide but still phone GPUs
+  const touch = window.matchMedia("(hover: none), (pointer: coarse)").matches;
   const lowCores = (navigator.hardwareConcurrency || 8) <= 4;
+  const light = small || touch || lowCores;
   const ratio = window.devicePixelRatio || 1;
   return {
-    segments: small || lowCores ? 160 : 220,
+    segments: light ? 160 : 220,
     grain: small ? 9 : 14,
-    fine: !small && !lowCores,
+    fine: !light,
     // enough pixels for a crisp texture without paying for 3x retina fill
-    dpr: Math.min(small ? 2 : 1.5, ratio),
+    dpr: Math.min(small ? 2 : touch ? 1.25 : 1.5, ratio),
   };
 }
 
