@@ -1,26 +1,237 @@
 @import "tailwindcss";
 
+/*
+  Palette: white is primary, black is secondary.
+  --ink  = the page (paper white)      --bone = the ink (near-black)
+  Names are kept role-based in components: bg-ink = surface, text-bone = foreground.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #f4f3ef;
+  --ink-2: #ebeae5;
+  --bone: #0b0b0b;
+  --mute: rgba(11, 11, 11, 0.55);
+  --line: rgba(11, 11, 11, 0.12);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  color-scheme: light;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-bone: var(--bone);
+  --color-mute: var(--mute);
+  --color-line: var(--line);
+  --font-display: var(--font-syne);
+  --font-serif: var(--font-instrument);
+  --font-sans: var(--font-manrope);
+  --font-mono: var(--font-jetbrains);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--ink);
+  -webkit-text-size-adjust: 100%;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--ink);
+  color: var(--bone);
+  font-family: var(--font-manrope), system-ui, sans-serif;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--bone);
+  color: var(--ink);
+}
+
+/* ---------- Liquid glass morphism (frosted white) ---------- */
+.glass {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.72) 0%,
+    rgba(255, 255, 255, 0.38) 45%,
+    rgba(255, 255, 255, 0.55) 100%
+  );
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  backdrop-filter: blur(14px) saturate(150%);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.04),
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 24px 60px -24px rgba(0, 0, 0, 0.22);
+  isolation: isolate;
+}
+/* specular rim: bright top-left edge fading into a hairline of ink */
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    140deg,
+    rgba(255, 255, 255, 1),
+    rgba(11, 11, 11, 0.1) 35%,
+    rgba(11, 11, 11, 0.06) 65%,
+    rgba(255, 255, 255, 0.9)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: -1;
+}
+.glass-strong {
+  background: linear-gradient(135deg, rgba(250, 250, 248, 0.86), rgba(244, 243, 239, 0.72));
+}
+
+/* ---------- Film grain ---------- */
+.grain {
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: 60;
+  /* no blend mode: a full-screen blended layer forces the whole page to
+     recomposite every frame, which is the classic cause of scroll jank */
+  opacity: 0.05;
+  contain: strict;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 0.9s steps(6) infinite;
+  will-change: transform;
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-6%, 4%); }
+  40% { transform: translate(5%, -7%); }
+  60% { transform: translate(-3%, 8%); }
+  80% { transform: translate(7%, 2%); }
+  100% { transform: translate(-4%, -5%); }
+}
+
+/* ---------- Text treatments ---------- */
+/* Syne is a variable font with overlapping contours, so text-stroke would draw
+   the hidden inner seams; a soft solid tone gives the same two-tone effect cleanly. */
+.text-outline {
+  color: rgba(11, 11, 11, 0.16);
+}
+/* dark polished-steel fill for display type on paper */
+.text-chrome {
+  background: linear-gradient(
+    180deg,
+    #0b0b0b 0%,
+    #2b2b2b 40%,
+    #8d8d8a 51%,
+    #1a1a1a 60%,
+    #4a4a48 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- Marquee ---------- */
+.marquee {
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+.marquee-track {
+  animation: marquee var(--duration, 40s) linear infinite;
+  will-change: transform;
+}
+.marquee-track[data-reverse="true"] {
+  animation-direction: reverse;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+/* ---------- Misc ---------- */
+.hairline {
+  background: linear-gradient(90deg, transparent, var(--line) 15%, var(--line) 85%, transparent);
+}
+
+.scroll-cue {
+  animation: cue 2.2s var(--ease-out) infinite;
+}
+@keyframes cue {
+  0% { transform: translateY(-100%); }
+  60%, 100% { transform: translateY(220%); }
+}
+
+.pulse-dot {
+  animation: pulse 2s ease-out infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(11, 11, 11, 0.45); }
+  100% { box-shadow: 0 0 0 10px rgba(11, 11, 11, 0); }
+}
+
+/* Phones: backdrop blur over animated WebGL is the most expensive thing on the
+   page, so glass becomes a denser frosted fill with the same rim + shadow. */
+@media (max-width: 768px), (hover: none) {
+  .glass {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(250, 249, 246, 0.78));
+  }
+}
+
+/* ---------- Intro (compositor-driven, immune to main-thread work) ---------- */
+.intro-rise {
+  animation: intro-rise 1s var(--ease-out) both;
+}
+@keyframes intro-rise {
+  from { transform: translate3d(0, 105%, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+.intro-bar {
+  transform-origin: left;
+  animation: intro-bar 1.65s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+@keyframes intro-bar {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -14px; }
+}
+
+@media (hover: none) {
+  .cursor-only { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain,
+  .intro-rise,
+  .intro-bar,
+  .marquee-track,
+  .scroll-cue,
+  .pulse-dot {
+    animation: none !important;
+  }
 }
