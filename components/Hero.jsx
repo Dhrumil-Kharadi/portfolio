@@ -71,8 +71,6 @@ export default function Hero() {
       <div className="mx-auto hidden w-full max-w-7xl justify-end font-mono text-[11px] uppercase tracking-[0.22em] text-mute sm:flex">
         <Reveal ready={ready} delay={0.3} y={10} className="text-right">
           {profile.location}
-          <br />
-          23.02° N · 72.57° E
         </Reveal>
       </div>
 

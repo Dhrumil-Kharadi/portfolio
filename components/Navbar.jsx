@@ -118,12 +118,13 @@ export default function Navbar() {
 
           <div className="flex items-center gap-2">
             <a
-              href={`mailto:${profile.email}`}
+              href="#contact"
+              onClick={(e) => go(e, "#contact")}
               className="group relative hidden overflow-hidden rounded-full bg-bone px-5 py-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-ink sm:inline-flex"
             >
               <span className="relative z-10 flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-ink" />
-                Hire me
+                Contact me
               </span>
               <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             </a>
