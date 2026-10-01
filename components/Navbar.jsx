@@ -20,6 +20,8 @@ export default function Navbar() {
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  // where the reveal circle grows from: the toggle's real on-screen centre
+  const [origin, setOrigin] = useState({ x: 0, y: 0 });
   const { scrollY } = useScroll();
   const lenis = useLenis();
 
@@ -135,7 +137,11 @@ export default function Navbar() {
 
             <button
               type="button"
-              onClick={() => setOpen((v) => !v)}
+              onClick={(e) => {
+                const r = e.currentTarget.getBoundingClientRect();
+                setOrigin({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
+                setOpen((v) => !v);
+              }}
               aria-expanded={open}
               aria-controls="mobile-menu"
               aria-label={open ? "Close menu" : "Open menu"}
@@ -156,47 +162,70 @@ export default function Navbar() {
         </nav>
       </motion.header>
 
+      {/*
+        Mobile menu. The reveal is a solid circle that only *scales* from the
+        toggle button: a pure compositor transform. Animating clip-path over a
+        full-screen backdrop-blur (with WebGL underneath) repainted the whole
+        screen every frame and flickered on phones.
+      */}
       <AnimatePresence>
         {open && (
           <motion.div
+            key="mobile-menu"
             id="mobile-menu"
-            initial={{ clipPath: "circle(0% at calc(100% - 44px) 40px)" }}
-            animate={{ clipPath: "circle(150% at calc(100% - 44px) 40px)" }}
-            exit={{ clipPath: "circle(0% at calc(100% - 44px) 40px)" }}
-            transition={{ duration: 0.8, ease }}
-            className="fixed inset-0 z-40 flex flex-col bg-ink/80 px-6 pb-[max(2rem,env(safe-area-inset-bottom))] pt-28 backdrop-blur-2xl md:hidden"
+            initial="closed"
+            animate="open"
+            exit="closed"
+            className="fixed inset-0 z-40 overflow-hidden md:hidden"
           >
-            <ul className="flex flex-1 flex-col justify-center gap-2">
-              {navLinks.map((l, i) => (
-                <li key={l.href} className="overflow-hidden">
-                  <motion.a
-                    href={l.href}
-                    onClick={(e) => go(e, l.href)}
-                    initial={{ y: "110%" }}
-                    animate={{ y: 0 }}
-                    exit={{ y: "110%" }}
-                    transition={{ duration: 0.7, ease, delay: 0.15 + i * 0.06 }}
-                    className="flex items-baseline gap-4 py-1"
-                  >
-                    <span className="font-mono text-xs text-mute">0{i + 1}</span>
-                    <span
-                      className={`font-display text-[13vw] font-bold leading-[1.05] tracking-tight ${
-                        active === l.href ? "text-bone" : "text-outline"
-                      }`}
-                    >
-                      {l.label}
-                    </span>
-                  </motion.a>
-                </li>
-              ))}
-            </ul>
+            <motion.span
+              aria-hidden
+              variants={{
+                open: { scale: 1, transition: { duration: 0.65, ease } },
+                closed: { scale: 0, transition: { duration: 0.5, ease: [0.7, 0, 0.84, 0], delay: 0.12 } },
+              }}
+              style={{ left: origin.x, top: origin.y, width: "300vmax", height: "300vmax", marginLeft: "-150vmax", marginTop: "-150vmax" }}
+              className="absolute rounded-full bg-ink will-change-transform"
+            />
+
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.6, delay: 0.45 }}
-              className="flex flex-col gap-4 border-t border-line pt-6"
+              variants={{
+                open: { opacity: 1, transition: { duration: 0.3, delay: 0.18 } },
+                closed: { opacity: 0, transition: { duration: 0.18 } },
+              }}
+              className="relative flex h-full flex-col px-6 pb-[max(2rem,env(safe-area-inset-bottom))] pt-28"
             >
+              <ul className="flex flex-1 flex-col justify-center gap-2">
+                {navLinks.map((l, i) => (
+                  <li key={l.href} className="overflow-hidden">
+                    <motion.a
+                      href={l.href}
+                      onClick={(e) => go(e, l.href)}
+                      variants={{
+                        open: { y: 0, transition: { duration: 0.6, ease, delay: 0.22 + i * 0.05 } },
+                        closed: { y: "110%", transition: { duration: 0.2 } },
+                      }}
+                      className="flex items-baseline gap-4 py-1 will-change-transform"
+                    >
+                      <span className="font-mono text-xs text-mute">0{i + 1}</span>
+                      <span
+                        className={`font-display text-[13vw] font-bold leading-[1.05] tracking-tight ${
+                          active === l.href ? "text-bone" : "text-outline"
+                        }`}
+                      >
+                        {l.label}
+                      </span>
+                    </motion.a>
+                  </li>
+                ))}
+              </ul>
+              <motion.div
+                variants={{
+                  open: { opacity: 1, y: 0, transition: { duration: 0.5, ease, delay: 0.4 } },
+                  closed: { opacity: 0, y: 12, transition: { duration: 0.15 } },
+                }}
+                className="flex flex-col gap-4 border-t border-line pt-6"
+              >
               <a href={`mailto:${profile.email}`} className="font-serif text-2xl italic">
                 {profile.email}
               </a>
@@ -208,6 +237,7 @@ export default function Navbar() {
                   LinkedIn ↗
                 </a>
               </div>
+              </motion.div>
             </motion.div>
           </motion.div>
         )}
