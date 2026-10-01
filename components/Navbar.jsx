@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 import { navLinks, profile } from "@/lib/data";
 import { useLenis } from "lenis/react";
+import MusicToggle from "./MusicToggle";
 
 const ease = [0.16, 1, 0.3, 1];
 
@@ -117,6 +118,7 @@ export default function Navbar() {
           </ul>
 
           <div className="flex items-center gap-2">
+            <MusicToggle />
             <a
               href="#contact"
               onClick={(e) => go(e, "#contact")}
