@@ -80,7 +80,7 @@ export default function Navbar() {
             href="#home"
             onClick={(e) => go(e, "#home")}
             className="group flex items-center gap-3"
-            aria-label="Dhrumil Kharadi — home"
+            aria-label="Dhrumil Kharadi - home"
           >
             <Monogram />
             <span className="hidden flex-col leading-none sm:flex">

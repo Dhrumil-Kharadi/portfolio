@@ -2,7 +2,7 @@
 
 # portfolio
 
-**Cinematic black & white portfolio of Dhrumil Kharadi — DevOps Engineer & Full-Stack Developer.**
+**Cinematic black & white portfolio of Dhrumil Kharadi - DevOps Engineer & Full-Stack Developer.**
 
 [![Live](https://img.shields.io/badge/Live-dhrumil--kharadi.vercel.app-f4f3ef?style=for-the-badge&logo=vercel&logoColor=f4f3ef&labelColor=0b0b0b)](https://dhrumil-kharadi.vercel.app/)
 
@@ -15,12 +15,12 @@
 
 ## ✦ Highlights
 
-- **Anomalous matter** — a shader-displaced 3D sphere (simplex-noise folds) with a soft porcelain surface and an analytic stone-grain bump, built with React Three Fiber.
-- **Charcoal smoke** — a full-screen domain-warped fbm shader in raw WebGL, with a plume that billows behind the hero and reacts to the cursor.
-- **Liquid-glass UI** — frosted panels with a specular rim, tuned down to a solid frost on phones for performance.
-- **Live CI/CD pipeline** — a looping `commit → build → test → deploy → live` status line.
-- **Cinematic intro** — compositor-driven reveal that stays smooth while shaders compile underneath.
-- **Smooth scrolling** — Lenis, with WebGL paused off-screen and the smoke throttled to 30fps.
+- **Anomalous matter** - a shader-displaced 3D sphere (simplex-noise folds) with a soft porcelain surface and an analytic stone-grain bump, built with React Three Fiber.
+- **Charcoal smoke** - a full-screen domain-warped fbm shader in raw WebGL, with a plume that billows behind the hero and reacts to the cursor.
+- **Liquid-glass UI** - frosted panels with a specular rim, tuned down to a solid frost on phones for performance.
+- **Live CI/CD pipeline** - a looping `commit → build → test → deploy → live` status line.
+- **Cinematic intro** - compositor-driven reveal that stays smooth while shaders compile underneath.
+- **Smooth scrolling** - Lenis, with WebGL paused off-screen and the smoke throttled to 30fps.
 
 ## ✦ Stack
 

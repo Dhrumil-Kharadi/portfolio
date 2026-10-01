@@ -58,7 +58,7 @@ export default function Hero() {
       className="relative isolate flex min-h-[100svh] flex-col overflow-hidden px-4 pb-6 pt-24 sm:px-6 sm:pt-28 lg:px-10"
     >
       <h1 className="sr-only">
-        {profile.name} — {profile.role}
+        {profile.name} - {profile.role}
       </h1>
 
       {/* faint blueprint grid */}
@@ -87,7 +87,7 @@ export default function Hero() {
           <SplitWord text={profile.last} ready={ready} delay={0.45} />
         </div>
 
-        {/* 3D anomalous matter — in flow on phones, full backdrop from sm up */}
+        {/* 3D anomalous matter - in flow on phones, full backdrop from sm up */}
         <motion.div
           aria-hidden
           style={{ y: sceneY, scale: sceneScale, opacity: sceneOpacity }}

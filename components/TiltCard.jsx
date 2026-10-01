@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { motion, useMotionTemplate, useMotionValue, useSpring } from "motion/react";
 
-// Pointer-tracked 3D tilt with a moving specular glare — a liquid-glass take
+// Pointer-tracked 3D tilt with a moving specular glare - a liquid-glass take
 // on the "Holo Card" pattern.
 export default function TiltCard({ children, className = "", max = 10 }) {
   const ref = useRef(null);

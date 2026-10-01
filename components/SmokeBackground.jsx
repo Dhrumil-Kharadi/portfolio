@@ -151,7 +151,7 @@ export default function SmokeBackground() {
 
     const isMobile = window.matchMedia("(max-width: 768px), (hover: none)").matches;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // Smoke is soft — rendering below native res and upscaling is invisible
+    // Smoke is soft - rendering below native res and upscaling is invisible
     // and saves most of the fill-rate.
     const scale = isMobile ? 0.3 : 0.38;
 
