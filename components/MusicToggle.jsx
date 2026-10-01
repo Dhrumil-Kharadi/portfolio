@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { music } from "@/lib/data";
 import { useIntro } from "./IntroProvider";
+import WaveIcon from "./WaveIcon";
 
 const FADE = 0.8; // seconds of fade at each loop seam and on play/pause
 const PREF_KEY = "dk-music";
@@ -21,6 +22,7 @@ export default function MusicToggle() {
   const [on, setOn] = useState(true);
   const [playing, setPlaying] = useState(false);
   const [available, setAvailable] = useState(true);
+  const [hover, setHover] = useState(false);
 
   const rampTo = (value, seconds) => {
     const g = graph.current;
@@ -51,7 +53,7 @@ export default function MusicToggle() {
     try {
       // never await resume(): before a user gesture Chrome leaves it pending
       if (g && g.ctx.state !== "running") g.ctx.resume().catch(() => {});
-      if (audio.currentTime < music.start || audio.currentTime >= music.end) {
+      if (audio.currentTime < music.start || (music.end != null && audio.currentTime >= music.end)) {
         audio.currentTime = music.start;
       }
       await audio.play();
@@ -125,10 +127,14 @@ export default function MusicToggle() {
     };
   }, [ready, available, start]);
 
-  // loop the section with a soft fade across the seam
+  // loop the section with a soft fade across the seam (or the whole song)
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
+    if (music.end == null) {
+      audio.loop = true;
+      return;
+    }
     const onTime = () => {
       const t = audio.currentTime;
       if (t >= music.end - FADE && !fadingOut.current && wantOn.current) {
@@ -181,7 +187,6 @@ export default function MusicToggle() {
 
   if (!available) return null;
 
-  const active = on && playing;
   return (
     <>
       <audio
@@ -198,34 +203,15 @@ export default function MusicToggle() {
         aria-pressed={on}
         aria-label={on ? "Turn music off" : "Turn music on"}
         title={`${on ? "Music on" : "Music off"} · ${music.credit}`}
-        className={`relative grid h-11 w-11 place-items-center rounded-full transition-[background-color,color,box-shadow] duration-500 ${
+        onPointerEnter={(e) => e.pointerType === "mouse" && setHover(true)}
+        onPointerLeave={() => setHover(false)}
+        className={`relative grid h-11 w-11 place-items-center rounded-full transition-[background-color,color,box-shadow,transform] duration-500 ease-[var(--ease-out)] active:scale-90 ${
           on
             ? "bg-bone text-ink shadow-[0_10px_24px_-10px_rgba(0,0,0,0.55)]"
             : "glass text-bone"
         }`}
       >
-        {/* Lusion-style sound wave: a sine that scrolls while playing and
-            flattens into a line when off (amplitude = scaleY on the group) */}
-        <svg aria-hidden viewBox="0 0 24 24" className="h-6 w-6 overflow-visible">
-          <defs>
-            <clipPath id="music-wave-clip">
-              <rect x="5" y="2" width="14" height="20" rx="1" />
-            </clipPath>
-          </defs>
-          <g clipPath="url(#music-wave-clip)">
-            <g className={`wave-amp ${active ? "is-on" : on ? "is-waiting" : ""}`}>
-              <path
-                className={`wave-path ${active ? "is-moving" : ""}`}
-                d="M-3 12q2-5 4 0t4 0t4 0t4 0t4 0t4 0t4 0t4 0"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </g>
-          </g>
-        </svg>
+        <WaveIcon level={on ? (playing ? 1 : 0.5) : 0} hover={hover} className="h-[18px] w-[26px]" />
       </button>
     </>
   );
